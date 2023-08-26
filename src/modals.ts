@@ -6,7 +6,7 @@ import {
     TextAreaComponent,
     Notice,
 } from "obsidian";
-import ElevenLabsPlugin from "../main";
+import ElevenLabsPlugin from "./main";
 import { VoiceSettings, textToSpeech } from "./eleven_labs_api";
 
 export class ElevenLabsModal extends Modal {

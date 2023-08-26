@@ -11,9 +11,9 @@ import {
     ElevenLabsPluginSettings,
     DEFAULT_SETTINGS,
     ElevenLabsSettingTab,
-} from "./lib/settings";
-import { getVoices } from "./lib/eleven_labs_api";
-import { ElevenLabsModal } from "./lib/modals";
+} from "./settings";
+import { getVoices } from "./eleven_labs_api";
+import { ElevenLabsModal } from "./modals";
 
 export default class ElevenLabsPlugin extends Plugin {
     settings: ElevenLabsPluginSettings;

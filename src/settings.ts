@@ -1,16 +1,14 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import ElevenLabsPlugin from "../main";
+import ElevenLabsPlugin from "./main";
 
 export interface ElevenLabsPluginSettings {
     apiKey: string;
     selectedVoiceId: string | null;
-    outputDirectory: string;
 }
 
 export const DEFAULT_SETTINGS: ElevenLabsPluginSettings = {
     apiKey: "",
-    selectedVoiceId: null,
-    outputDirectory: "",
+    selectedVoiceId: null
 };
 
 export class ElevenLabsSettingTab extends PluginSettingTab {
