@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "eleven-labs-obsidian-plugin",
+	"version": "0.1.0",
+	"description": "Turn your Obsidian notes into TTS audio files with Eleven Labs",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

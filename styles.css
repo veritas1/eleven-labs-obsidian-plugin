@@ -6,3 +6,47 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+.modal-content {
+    padding: 1rem;
+}
+
+.text-area {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.text-area textarea {
+    width: 100%;
+    height: 150px;
+}
+
+.btn-generate-audio {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.dropdown {
+    width: 100% !important;
+}
+
+.slider {
+    width: 100% !important;
+    margin-bottom: 1rem;
+}
+.slider[disabled] {
+    opacity: 0.20;
+}
+
+.enable {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.enable input[type="checkbox"] {
+    margin-left: 0.5rem;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+}

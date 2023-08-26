@@ -26,6 +26,7 @@ export default class ElevenLabsPlugin extends Plugin {
             const markdownView =
                 this.app.workspace.getActiveViewOfType(MarkdownView);
             const selectedText = markdownView?.editor.getSelection();
+            
 
             item.setTitle("Eleven Labs")
                 .setIcon("file-audio")
