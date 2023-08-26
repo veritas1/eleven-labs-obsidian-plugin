@@ -148,6 +148,9 @@ export class ElevenLabsModal extends Modal {
             .setValue(this.selectedText)
             .setDisabled(true);
 
+        const charCountEl = textAreaEl.createDiv("char-count");
+        charCountEl.setText(`Characters: ${this.selectedText.length}`);
+
         const actionsEl = contentEl.createDiv();
 
         // Create button
@@ -189,7 +192,7 @@ export class ElevenLabsModal extends Modal {
         }
 
         const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
-        const notePath = activeView?.file?.path;
+        const notePath = activeView?.file?.basename;
         console.log(notePath);
 
         textToSpeech(
@@ -234,6 +237,7 @@ export class ElevenLabsModal extends Modal {
 ---
 voice: ${voiceName}
 voice_id: ${voiceId}
+model: eleven_monolingual_v1
 created: ${date.toLocaleString()}
 tags: [eleven-labs]
 ---
@@ -255,6 +259,7 @@ tags: [eleven-labs]
 ${metadata}
 
 **Voice:** ${voiceName}
+**Model:** eleven_monolingual_v1
 **Created:** ${date.toLocaleString()}
 **Voice Settings Overridden:** ${enabled}
 **Stability:** ${stability}
