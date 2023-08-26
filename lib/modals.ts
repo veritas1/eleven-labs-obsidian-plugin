@@ -4,9 +4,10 @@ import {
     ButtonComponent,
     SliderComponent,
     TextAreaComponent,
+    Notice,
 } from "obsidian";
 import ElevenLabsPlugin from "../main";
-import { textToSpeech } from "./eleven_labs_api";
+import { VoiceSettings, textToSpeech } from "./eleven_labs_api";
 
 export class ElevenLabsModal extends Modal {
     plugin: ElevenLabsPlugin;
@@ -154,29 +155,123 @@ export class ElevenLabsModal extends Modal {
             .setClass("btn-generate-audio")
             .setButtonText("Generate audio")
             .onClick(() => {
+                new Notice("Eleven Labs: Generating audio...", 5000);
+                this.createFiles();
                 const voiceName = selectEl.options[selectEl.selectedIndex].text;
                 const voiceId = selectEl.value;
-                this.createFiles();
-
-                const activeView =
-                    this.app.workspace.getActiveViewOfType(MarkdownView);
-                console.log(activeView);
-
-                // textToSpeech(this.plugin.settings.apiKey, this.selectedText, voiceId).then((response: any) => {
-                //     new Notice("Eleven Labs: Audio file created!");
-
-                //     const filename = `${Date.now()}-${voiceName}-${voiceId}`;
-
-                //     this.app.vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, response.data);
-                //     this.app.vault.create(`ElevenLabs/${filename}.md`, `**Voice:** ${voiceName}\n**Timestamp:** 2022-08-13 at 14:30\n\n${this.selectedText}\n\n![[ElevenLabs/Audio/${filename}.mp3]]\n\n---`);
-                // });
+                const enableVoiceSettings = enabled.checked;
+                const stability = stabilitySlider.getValue();
+                const similarityBoost = similaritySlider.getValue();
+                this.generateAudio(
+                    voiceName,
+                    voiceId,
+                    enableVoiceSettings,
+                    stability,
+                    similarityBoost
+                );
                 this.close();
+            });
+    }
+
+    generateAudio(
+        voiceName: string,
+        voiceId: string,
+        enabled: boolean,
+        stability: number,
+        similarityBoost: number
+    ) {
+        let voiceSettings: VoiceSettings | undefined = undefined;
+        if (enabled) {
+            voiceSettings = {
+                stability: stability,
+                similarityBoost: similarityBoost,
+            };
+        }
+
+        const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
+        const notePath = activeView?.file?.path;
+        console.log(notePath);
+
+        textToSpeech(
+            this.plugin.settings.apiKey,
+            this.selectedText,
+            voiceId,
+            voiceSettings
+        )
+            .then((response: any) => {
+                const date = new Date();
+                const filename = this.generateFilename(voiceName, date);
+                new Notice(
+                    `Eleven Labs: Created audio file (${filename})`,
+                    5000
+                );
+
+                this.createAudioFile(filename, response.data);
+                this.createAudioNote(
+                    filename,
+                    voiceName,
+                    voiceId,
+                    enabled,
+                    stability,
+                    similarityBoost,
+                    date,
+                    notePath
+                );
+            })
+            .catch((error) => {
+                new Notice(`Eleven Labs: ${error.detail.message}`, 0);
+                console.log(error);
             });
     }
 
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
+    }
+
+    createNoteMetadata(voiceName: string, voiceId: string, date: Date) {
+        return `
+---
+voice: ${voiceName}
+voice_id: ${voiceId}
+created: ${date.toLocaleString()}
+tags: [eleven-labs]
+---
+`;
+    }
+
+    createAudioNote(
+        filename: string,
+        voiceName: string,
+        voiceId: string,
+        enabled: boolean,
+        stability: number,
+        similarityBoost: number,
+        date: Date,
+        notePath: string | undefined
+    ) {
+        const metadata = this.createNoteMetadata(voiceName, voiceId, date);
+        const content = `
+${metadata}
+
+**Voice:** ${voiceName}
+**Created:** ${date.toLocaleString()}
+**Voice Settings Overridden:** ${enabled}
+**Stability:** ${stability}
+**Similarity Boost:** ${similarityBoost}
+**Note:** [[${notePath}]]
+
+> ${this.selectedText}
+
+![[ElevenLabs/Audio/${filename}.mp3]]
+
+---
+`;
+        this.app.vault.create(`ElevenLabs/${filename}.md`, content);
+    }
+
+    createAudioFile(filename: string, data: any) {
+        this.app.vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
     }
 
     createFiles() {
@@ -188,16 +283,13 @@ export class ElevenLabsModal extends Modal {
         }
     }
 
-    timestamp() {
-        const date = new Date();
-        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-            2,
-            "0"
-        )}-${String(date.getDate()).padStart(2, "0")}_${String(
-            date.getHours()
-        ).padStart(2, "0")}-${String(date.getMinutes()).padStart(
-            2,
-            "0"
-        )}-${String(date.getSeconds()).padStart(2, "0")}`;
+    generateFilename(voiceName: string, date: Date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const hour = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const seconds = date.getSeconds().toString().padStart(2, "0");
+        return `${year}-${month}-${day}_${hour}-${minutes}-${seconds}_${voiceName}`;
     }
 }

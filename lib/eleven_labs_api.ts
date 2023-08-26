@@ -2,10 +2,9 @@ import axios from "axios";
 
 const BASE_URL = "https://api.elevenlabs.io/v1";
 
-interface SpeechOptions {
+export interface VoiceSettings {
     stability?: number;
-    similarity_boost?: number;
-    model_id?: string;
+    similarityBoost?: number;
 }
 
 export function getVoices(apiKey: string): Promise<any> {
@@ -15,10 +14,15 @@ export function getVoices(apiKey: string): Promise<any> {
         headers: {
             "xi-api-key": apiKey,
         },
-    })
- }
+    });
+}
 
-export function textToSpeech(apiKey: string, text: string, voiceId: string, options?: SpeechOptions): Promise<any> {
+export function textToSpeech(
+    apiKey: string,
+    text: string,
+    voiceId: string,
+    options?: VoiceSettings
+): Promise<any> {
     return axios({
         method: "POST",
         url: `${BASE_URL}/text-to-speech/${voiceId}`,
@@ -26,9 +30,8 @@ export function textToSpeech(apiKey: string, text: string, voiceId: string, opti
             text: text,
             voice_settings: {
                 stability: options?.stability || 0,
-                similarity_boost: options?.similarity_boost || 0,
+                similarity_boost: options?.similarityBoost || 0,
             },
-            model_id: options?.model_id || undefined,
         },
         headers: {
             Accept: "audio/mpeg",
@@ -36,5 +39,5 @@ export function textToSpeech(apiKey: string, text: string, voiceId: string, opti
             "Content-Type": "application/json",
         },
         responseType: "arraybuffer",
-    })
+    });
 }
