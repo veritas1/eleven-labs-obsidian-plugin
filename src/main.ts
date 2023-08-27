@@ -1,12 +1,4 @@
-import {
-    Editor,
-    MarkdownView,
-    Plugin,
-    Menu,
-    MarkdownFileInfo,
-    TAbstractFile,
-    WorkspaceLeaf,
-} from "obsidian";
+import { Editor, MarkdownView, Plugin, Menu, MarkdownFileInfo, Notice } from "obsidian";
 import {
     ElevenLabsPluginSettings,
     DEFAULT_SETTINGS,
@@ -45,8 +37,7 @@ export default class ElevenLabsPlugin extends Plugin {
         await this.loadSettings();
 
         // Load voices
-        const response = await getVoices(this.settings.apiKey);
-        this.voices = response.data.voices;
+        this.loadVoices();
 
         // Add context menu item
         this.app.workspace.on("editor-menu", this.addContextMenuItems);
@@ -56,6 +47,15 @@ export default class ElevenLabsPlugin extends Plugin {
     }
 
     onunload() {}
+
+    async loadVoices() {
+        try {
+            this.voices = await getVoices(this.settings.apiKey);
+        } catch (error) {
+            new Notice(`Eleven Labs: ${error.detail.message}`, 0);
+            console.log(error);
+        }
+    }
 
     async loadSettings() {
         this.settings = Object.assign(

@@ -1,7 +1,7 @@
 import type {Config} from 'jest';
 
 const config: Config = {
-  automock: true,
+  automock: false,
 };
 
 export default config;

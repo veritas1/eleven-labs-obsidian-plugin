@@ -7,7 +7,7 @@ import {
     Notice,
 } from "obsidian";
 import ElevenLabsPlugin from "./main";
-import { VoiceSettings, textToSpeech } from "./eleven_labs_api";
+import ElevenLabsApi, { VoiceSettings } from "./eleven_labs_api";
 
 export class ElevenLabsModal extends Modal {
     plugin: ElevenLabsPlugin;
@@ -195,7 +195,7 @@ export class ElevenLabsModal extends Modal {
         const notePath = activeView?.file?.basename;
         console.log(notePath);
 
-        textToSpeech(
+        ElevenLabsApi.textToSpeech(
             this.plugin.settings.apiKey,
             this.selectedText,
             voiceId,
