@@ -1,10 +1,17 @@
-import { Editor, MarkdownView, Plugin, Menu, MarkdownFileInfo, Notice } from "obsidian";
+import {
+    Editor,
+    MarkdownView,
+    Plugin,
+    Menu,
+    MarkdownFileInfo,
+    Notice,
+} from "obsidian";
 import {
     ElevenLabsPluginSettings,
     DEFAULT_SETTINGS,
     ElevenLabsSettingTab,
 } from "./settings";
-import { getVoices } from "./eleven_labs_api";
+import ElevenLabsApi from "./eleven_labs_api";
 import { ElevenLabsModal } from "./modals";
 
 export default class ElevenLabsPlugin extends Plugin {
@@ -50,7 +57,7 @@ export default class ElevenLabsPlugin extends Plugin {
 
     async loadVoices() {
         try {
-            this.voices = await getVoices(this.settings.apiKey);
+            this.voices = await ElevenLabsApi.getVoices(this.settings.apiKey);
         } catch (error) {
             new Notice(`Eleven Labs: ${error.detail.message}`, 0);
             console.log(error);

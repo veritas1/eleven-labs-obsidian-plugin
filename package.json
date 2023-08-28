@@ -30,6 +30,7 @@
 		"esbuild": "0.17.3",
 		"jest-mock-extended": "^3.0.5",
 		"obsidian": "latest",
+		"timezone-mock": "^1.3.6",
 		"ts-jest": "^29.1.1",
 		"ts-node": "^10.9.1",
 		"tslib": "2.4.0",

@@ -8,6 +8,7 @@ import {
 } from "obsidian";
 import ElevenLabsPlugin from "./main";
 import ElevenLabsApi, { VoiceSettings } from "./eleven_labs_api";
+import { generateFilename, createVaultDirectories } from "./util/file";
 
 export class ElevenLabsModal extends Modal {
     plugin: ElevenLabsPlugin;
@@ -159,7 +160,10 @@ export class ElevenLabsModal extends Modal {
             .setButtonText("Generate audio")
             .onClick(() => {
                 new Notice("Eleven Labs: Generating audio...", 5000);
-                this.createFiles();
+                createVaultDirectories(this.app.vault, [
+                    "ElevenLabs",
+                    "ElevenLabs/Audio",
+                ]);
                 const voiceName = selectEl.options[selectEl.selectedIndex].text;
                 const voiceId = selectEl.value;
                 const enableVoiceSettings = enabled.checked;
@@ -203,7 +207,7 @@ export class ElevenLabsModal extends Modal {
         )
             .then((response: any) => {
                 const date = new Date();
-                const filename = this.generateFilename(voiceName, date);
+                const filename = generateFilename(voiceName, date);
                 new Notice(
                     `Eleven Labs: Created audio file (${filename})`,
                     5000
@@ -277,24 +281,5 @@ ${metadata}
 
     createAudioFile(filename: string, data: any) {
         this.app.vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
-    }
-
-    createFiles() {
-        if (!this.app.vault.getAbstractFileByPath("ElevenLabs")) {
-            this.app.vault.createFolder("ElevenLabs");
-        }
-        if (!this.app.vault.getAbstractFileByPath("ElevenLabs/Audio")) {
-            this.app.vault.createFolder("ElevenLabs/Audio");
-        }
-    }
-
-    generateFilename(voiceName: string, date: Date) {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const hour = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        const seconds = date.getSeconds().toString().padStart(2, "0");
-        return `${year}-${month}-${day}_${hour}-${minutes}-${seconds}_${voiceName}`;
     }
 }

@@ -8,7 +8,7 @@ export interface ElevenLabsPluginSettings {
 
 export const DEFAULT_SETTINGS: ElevenLabsPluginSettings = {
     apiKey: "",
-    selectedVoiceId: null
+    selectedVoiceId: null,
 };
 
 export class ElevenLabsSettingTab extends PluginSettingTab {
