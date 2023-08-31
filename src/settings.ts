@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import ElevenLabsPlugin from "./main";
+import ElevenLabsPlugin from "../main";
 
 export interface ElevenLabsPluginSettings {
     apiKey: string;

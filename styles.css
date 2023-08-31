@@ -56,3 +56,17 @@ If your plugin does not need CSS, delete this file.
     opacity: 0.5;
     margin-top: 0.5rem;
 }
+
+.voice-settings h6 {
+    display: inline-block;
+}
+
+.voice-settings .checkbox-container {
+    display: inline-block;
+    margin-left: 1rem;
+    vertical-align: middle;
+}
+
+.voice-settings-description {
+    margin-bottom: 1rem;
+}

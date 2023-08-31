@@ -10,9 +10,9 @@ import {
     ElevenLabsPluginSettings,
     DEFAULT_SETTINGS,
     ElevenLabsSettingTab,
-} from "./settings";
-import ElevenLabsApi from "./eleven_labs_api";
-import { ElevenLabsModal } from "./modals";
+} from "./src/settings";
+import ElevenLabsApi from "./src/eleven_labs_api";
+import { ElevenLabsModal } from "./src/modals";
 
 export default class ElevenLabsPlugin extends Plugin {
     settings: ElevenLabsPluginSettings;
