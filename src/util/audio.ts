@@ -27,11 +27,8 @@ function createAudioNote(
     date: Date,
     notePath: string | undefined
 ) {
-    const metadata = createNoteProperties(voiceName, voiceId, date);
-    console.log("Created meteadata:", metadata);
+    // const properties = createNoteProperties(voiceName, voiceId, date);
     const content = `
-${metadata}
-
 **Voice:** ${voiceName}
 **Model:** eleven_monolingual_v1
 **Created:** ${date.toLocaleString()}
@@ -46,14 +43,11 @@ ${metadata}
 
 ---
 `;
-    console.log("Created content:", content);
     vault.create(`ElevenLabs/${filename}.md`, content);
 }
 
 function createAudioFile(vault: Vault, filename: string, data: any) {
-    console.log("Creating audio file:", filename, vault, data);
     vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
-    console.log("Created audio file:", filename);
 }
 
 export function generateAudio(
