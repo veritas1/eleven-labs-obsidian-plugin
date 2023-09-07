@@ -3,7 +3,7 @@ import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
 
-function createNoteMetadata(voiceName: string, voiceId: string, date: Date) {
+function createNoteProperties(voiceName: string, voiceId: string, date: Date) {
     return `
 ---
 voice: ${voiceName}
@@ -27,7 +27,7 @@ function createAudioNote(
     date: Date,
     notePath: string | undefined
 ) {
-    const metadata = createNoteMetadata(voiceName, voiceId, date);
+    const metadata = createNoteProperties(voiceName, voiceId, date);
     console.log("Created meteadata:", metadata);
     const content = `
 ${metadata}
@@ -46,6 +46,7 @@ ${metadata}
 
 ---
 `;
+    console.log("Created content:", content);
     vault.create(`ElevenLabs/${filename}.md`, content);
 }
 
