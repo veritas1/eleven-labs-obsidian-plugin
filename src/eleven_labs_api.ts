@@ -1,14 +1,24 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-const BASE_URL = "https://api.elevenlabs.io/v1";
+export const BASE_URL = "https://api.elevenlabs.io/v1";
 
 export interface VoiceSettings {
-    stability?: number;
-    similarityBoost?: number;
+    stability: number;
+    similarity_boost: number;
+}
+
+interface TextToSpeechRequest { 
+    text: string;
+    voice_settings?: VoiceSettings;
+}
+
+interface VoicesResponse {
+    voices: any[];
 }
 
 class ElevenLabsApi {
-    static async getVoices(apiKey: string): Promise<any> {
+    static async getVoices(apiKey: string): Promise<AxiosResponse<VoicesResponse>> {
+
         return axios
             .get(`${BASE_URL}/voices`, {
                 headers: {
@@ -24,16 +34,20 @@ class ElevenLabsApi {
         text: string,
         voiceId: string,
         options?: VoiceSettings
-    ): Promise<any> {
+    ) {
+        const data: TextToSpeechRequest = {
+            text: text,
+        };
+        if (options) {
+            const settings: VoiceSettings = {
+                stability: options.stability/100.0,
+                similarity_boost: options.similarity_boost/100.0,
+            };
+            data.voice_settings = settings;
+        }
+
         return axios
-            .post(`${BASE_URL}/text-to-speech/${voiceId}`, {
-                data: {
-                    text: text,
-                    voice_settings: {
-                        stability: options?.stability || 0,
-                        similarity_boost: options?.similarityBoost || 0,
-                    },
-                },
+            .post(`${BASE_URL}/text-to-speech/${voiceId}`, data, {
                 headers: {
                     Accept: "audio/mpeg",
                     "xi-api-key": apiKey,

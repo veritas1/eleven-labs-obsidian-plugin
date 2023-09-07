@@ -1,6 +1,7 @@
-import { Notice, MarkdownView } from "obsidian";
+import { Notice, MarkdownView, Vault } from "obsidian";
 import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
+import ElevenLabsPlugin from "main";
 
 function createNoteMetadata(voiceName: string, voiceId: string, date: Date) {
     return `
@@ -8,13 +9,15 @@ function createNoteMetadata(voiceName: string, voiceId: string, date: Date) {
 voice: ${voiceName}
 voice_id: ${voiceId}
 model: eleven_monolingual_v1
-created: ${date.toLocaleString()}
+created: 2023-09-06T12:00:00
 tags: [eleven-labs]
 ---
 `;
 }
 
 function createAudioNote(
+    vault: Vault,
+    text: string,
     filename: string,
     voiceName: string,
     voiceId: string,
@@ -25,31 +28,36 @@ function createAudioNote(
     notePath: string | undefined
 ) {
     const metadata = createNoteMetadata(voiceName, voiceId, date);
+    console.log("Created meteadata:", metadata);
     const content = `
 ${metadata}
 
 **Voice:** ${voiceName}
 **Model:** eleven_monolingual_v1
 **Created:** ${date.toLocaleString()}
-**Voice Settings Overridden:** ${enabled}
+**Voice Settings Enabled:** ${enabled}
 **Stability:** ${stability}
 **Similarity Boost:** ${similarityBoost}
 **Note:** [[${notePath}]]
 
-> ${this.selectedText}
+> ${text}
 
 ![[ElevenLabs/Audio/${filename}.mp3]]
 
 ---
 `;
-    this.app.vault.create(`ElevenLabs/${filename}.md`, content);
+    vault.create(`ElevenLabs/${filename}.md`, content);
 }
 
-function createAudioFile(filename: string, data: any) {
-    this.app.vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
+function createAudioFile(vault: Vault, filename: string, data: any) {
+    console.log("Creating audio file:", filename, vault, data);
+    vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
+    console.log("Created audio file:", filename);
 }
 
 export function generateAudio(
+    plugin: ElevenLabsPlugin,
+    text: string,
     voiceName: string,
     voiceId: string,
     enabled: boolean,
@@ -60,7 +68,7 @@ export function generateAudio(
     if (enabled) {
         voiceSettings = {
             stability: stability,
-            similarityBoost: similarityBoost,
+            similarity_boost: similarityBoost,
         };
     }
 
@@ -68,8 +76,8 @@ export function generateAudio(
     const notePath = activeView?.file?.basename;
 
     ElevenLabsApi.textToSpeech(
-        this.plugin.settings.apiKey,
-        this.selectedText,
+        plugin.settings.apiKey,
+        text,
         voiceId,
         voiceSettings
     )
@@ -78,8 +86,10 @@ export function generateAudio(
             const filename = generateFilename(voiceName, date);
             new Notice(`Eleven Labs: Created audio file (${filename})`, 5000);
 
-            createAudioFile(filename, response.data);
+            createAudioFile(plugin.app.vault, filename, response);
             createAudioNote(
+                plugin.app.vault,
+                text,
                 filename,
                 voiceName,
                 voiceId,

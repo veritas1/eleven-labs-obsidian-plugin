@@ -1,5 +1,7 @@
+import ElevenLabsPlugin from "main";
 import {
     ButtonComponent,
+    Plugin,
     SliderComponent,
     TextAreaComponent,
     ToggleComponent,
@@ -124,10 +126,11 @@ function voicesGroupedByCategory(voices: any[]) {
 }
 
 export function renderVoiceSelect(
+    plugin: ElevenLabsPlugin,
     parent: HTMLElement,
-    voices: any[],
-    selectedVoiceId: string
 ): HTMLSelectElement {
+    const voices: any[] = plugin.voices;
+    const selectedVoiceId: string = plugin.settings.selectedVoiceId || "";
     return parent.createEl("select", "dropdown", (selectEl) => {
         // Add default prompt option
         const defaultOptionEl = selectEl.createEl("option", {
@@ -161,8 +164,8 @@ export function renderVoiceSelect(
 
         selectEl.addEventListener("change", (_) => {
             const selectedOption = selectEl.value;
-            this.plugin.settings.selectedVoiceId = selectedOption;
-            this.plugin.saveSettings();
+            plugin.settings.selectedVoiceId = selectedOption;
+            plugin.saveSettings();
         });
     });
 }

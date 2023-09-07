@@ -30,9 +30,8 @@ export class ElevenLabsModal extends Modal {
         contentEl.createDiv("settings", (el) => {
             // Select voice
             selectEl = renderVoiceSelect(
-                el,
-                this.plugin.voices,
-                this.plugin.settings.selectedVoiceId || ""
+                this.plugin,
+                el
             );
 
             // Divider
@@ -57,11 +56,13 @@ export class ElevenLabsModal extends Modal {
                     "ElevenLabs/Audio",
                 ]);
                 generateAudio(
+                    this.plugin,
+                    this.selectedText,
                     selectEl.options[selectEl.selectedIndex].text,
                     selectEl.value,
                     voiceSettings.voiceSettingsToggle.getValue(),
-                    voiceSettings.stability.getValue(),
-                    voiceSettings.similarityBoost.getValue()
+                    voiceSettings.stabilitySlider.getValue(),
+                    voiceSettings.similaritySlider.getValue()
                 );
                 this.close();
             });
