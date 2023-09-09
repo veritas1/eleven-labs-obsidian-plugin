@@ -1,7 +1,6 @@
 import ElevenLabsPlugin from "main";
 import {
     ButtonComponent,
-    Plugin,
     SliderComponent,
     TextAreaComponent,
     ToggleComponent,

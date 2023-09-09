@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 export const BASE_URL = "https://api.elevenlabs.io/v1";
 
@@ -12,12 +12,8 @@ interface TextToSpeechRequest {
     voice_settings?: VoiceSettings;
 }
 
-interface VoicesResponse {
-    voices: any[];
-}
-
 class ElevenLabsApi {
-    static async getVoices(apiKey: string): Promise<AxiosResponse<VoicesResponse>> {
+    static async getVoices(apiKey: string) {
 
         return axios
             .get(`${BASE_URL}/voices`, {

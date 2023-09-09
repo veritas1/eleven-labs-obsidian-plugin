@@ -1,9 +1,9 @@
 {
 	"id": "eleven-labs-plugin",
 	"name": "Eleven Labs",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"minAppVersion": "0.15.0",
-	"description": "Turn your Obsidian notes into TTS audio files with Eleven Labs",
+	"description": "Turn your Obsidian notes into text-to-speech audio files with Eleven Labs",
 	"author": "Mark Charles",
 	"authorUrl": "https://github.com/veritas1",
 	"fundingUrl": "https://www.buymeacoffee.com/veritas0x1",

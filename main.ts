@@ -57,9 +57,9 @@ export default class ElevenLabsPlugin extends Plugin {
 
     async loadVoices() {
         try {
-            this.voices = await ElevenLabsApi.getVoices(this.settings.apiKey);
+            const response = await ElevenLabsApi.getVoices(this.settings.apiKey);
+            this.voices = response;
         } catch (error) {
-            new Notice(`Eleven Labs: ${error.detail.message}`, 0);
             console.log(error);
         }
     }

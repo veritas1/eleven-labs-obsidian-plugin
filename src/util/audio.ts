@@ -3,17 +3,17 @@ import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
 
-function createNoteProperties(voiceName: string, voiceId: string, date: Date) {
-    return `
----
-voice: ${voiceName}
-voice_id: ${voiceId}
-model: eleven_monolingual_v1
-created: 2023-09-06T12:00:00
-tags: [eleven-labs]
----
-`;
-}
+// function createNoteProperties(voiceName: string, voiceId: string, date: Date) {
+//     return `
+// ---
+// voice: ${voiceName}
+// voice_id: ${voiceId}
+// model: eleven_monolingual_v1
+// created: 2023-09-06T12:00:00
+// tags: [eleven-labs]
+// ---
+// `;
+// }
 
 function createAudioNote(
     vault: Vault,
