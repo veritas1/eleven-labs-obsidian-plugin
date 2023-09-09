@@ -28,17 +28,19 @@ export class ElevenLabsModal extends Modal {
 
         // Settings
         contentEl.createDiv("settings", (el) => {
+
             // Select voice
-            selectEl = renderVoiceSelect(
-                this.plugin,
-                el
-            );
+            selectEl = renderVoiceSelect(this.plugin, el, () => {
+                voiceSettings = renderVoiceSettings(this.plugin, voiceSettingsContainer);
+            });
 
             // Divider
             el.createEl("hr");
 
+            const voiceSettingsContainer = el.createDiv("voice-settings");
+
             // Voice settings
-            voiceSettings = renderVoiceSettings(el);
+            voiceSettings = renderVoiceSettings(this.plugin, voiceSettingsContainer);
 
             // Divider
             el.createEl("hr");

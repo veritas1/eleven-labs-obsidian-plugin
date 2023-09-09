@@ -4,7 +4,6 @@ import {
     Plugin,
     Menu,
     MarkdownFileInfo,
-    Notice,
 } from "obsidian";
 import {
     ElevenLabsPluginSettings,

@@ -5,6 +5,7 @@ import {
     TextAreaComponent,
     ToggleComponent,
 } from "obsidian";
+import { VoiceSettings } from "src/settings";
 
 export function renderGenerateAudioButton(
     parent: HTMLElement,
@@ -17,44 +18,71 @@ export function renderGenerateAudioButton(
         .onClick(callback);
 }
 
-export function renderVoiceSettings(parent: HTMLElement) {
-    const el = parent.createDiv("voice-settings");
-    el.createEl("h6", { text: "Voice Settings" });
-    const voiceSettingsToggle = new ToggleComponent(el)
+export function renderVoiceSettings(
+    plugin: ElevenLabsPlugin,
+    parent: HTMLElement
+) {
+
+    parent.innerHTML = "";
+
+    const selectedVoiceId = plugin.settings.selectedVoiceId || "";
+
+    let voiceSettings: VoiceSettings =
+        plugin.settings.voiceSettings[selectedVoiceId];
+    if (voiceSettings == undefined) {
+        voiceSettings = {
+            enabled: false,
+            stability: 0,
+            similarity_boost: 0,
+        };
+        plugin.settings.voiceSettings[selectedVoiceId] = voiceSettings;
+    }
+
+    parent.createEl("h6", { text: "Voice Settings" });
+    const voiceSettingsToggle = new ToggleComponent(parent)
+        .setValue(voiceSettings.enabled)
         .setTooltip("Enable voice settings")
         .onChange((value) => {
-            console.log("Toggle value:", value);
             voiceSettingsContainer.toggle(value);
+            plugin.settings.voiceSettings[selectedVoiceId]["enabled"] = value;
         });
-    const voiceSettingsContainer = el.createDiv("voice-settings-container");
+    const voiceSettingsContainer = parent.createDiv("voice-settings-container");
     voiceSettingsContainer.createDiv({
         cls: "voice-settings-description",
         text: "These settings will override the stored settings for this voice. They only apply to this audio file.",
     });
+
+    voiceSettingsContainer.toggle(voiceSettings.enabled);
+
+    const stabilityInitialValue =
+        plugin.settings.voiceSettings[selectedVoiceId]["stability"] || 0;
+
     const stabilityEl = voiceSettingsContainer.createEl("div", {
-        text: "Stability: 0",
+        text: `Stability: ${stabilityInitialValue}`,
     });
     const stabilitySlider = new SliderComponent(voiceSettingsContainer)
-        .setValue(0) // Sets initial value
+        .setValue(stabilityInitialValue) // Sets initial value
         .setLimits(0, 100, 1) // Minimum, Maximum, Step
         .onChange((value) => {
-            console.log("Stability value:", value);
             stabilityEl.setText(`Stability: ${value}`);
+            plugin.settings.voiceSettings[selectedVoiceId]["stability"] = value;
         });
-    const similarityEl = voiceSettingsContainer.createEl("div", {
-        text: "Similarity boost: 0",
-    });
 
+    const similarityBoostInitialValue =
+        plugin.settings.voiceSettings[selectedVoiceId]["similarity_boost"] || 0;
+
+    const similarityEl = voiceSettingsContainer.createEl("div", {
+        text: `Similarity boost: ${similarityBoostInitialValue}`,
+    });
     // Add a slider
     const similaritySlider = new SliderComponent(voiceSettingsContainer)
-        .setValue(0) // Sets initial value
+        .setValue(similarityBoostInitialValue) // Sets initial value
         .setLimits(0, 100, 1) // Minimum, Maximum, Step
         .onChange((value) => {
-            console.log("Similarity value:", value);
             similarityEl.setText(`Similarity boost: ${value}`);
+            plugin.settings.voiceSettings[selectedVoiceId]["similarity_boost"] =
+                value;
         });
-
-    voiceSettingsContainer.hide();
 
     return {
         voiceSettingsToggle,
@@ -127,6 +155,7 @@ function voicesGroupedByCategory(voices: any[]) {
 export function renderVoiceSelect(
     plugin: ElevenLabsPlugin,
     parent: HTMLElement,
+    onVoiceSelected: () => void
 ): HTMLSelectElement {
     const voices: any[] = plugin.voices;
     const selectedVoiceId: string = plugin.settings.selectedVoiceId || "";
@@ -165,6 +194,7 @@ export function renderVoiceSelect(
             const selectedOption = selectEl.value;
             plugin.settings.selectedVoiceId = selectedOption;
             plugin.saveSettings();
+            onVoiceSelected();
         });
     });
 }
