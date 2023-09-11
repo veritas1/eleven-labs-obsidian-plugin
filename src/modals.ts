@@ -22,6 +22,7 @@ export class ElevenLabsModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
+        contentEl.addClass("eleven-labs-modal");
 
         let voiceSettings: any;
         let selectEl: HTMLSelectElement;
