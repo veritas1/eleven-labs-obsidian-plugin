@@ -1,6 +1,6 @@
 {
 	"name": "eleven-labs-obsidian-plugin",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Turn your Obsidian notes into TTS audio files with Eleven Labs",
 	"main": "main.js",
 	"scripts": {

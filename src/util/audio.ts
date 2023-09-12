@@ -2,6 +2,7 @@ import { Notice, MarkdownView, Vault } from "obsidian";
 import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
+import axios, { AxiosError } from "axios";
 
 // function createNoteProperties(voiceName: string, voiceId: string, date: Date) {
 //     return `
@@ -95,8 +96,17 @@ export function generateAudio(
                 notePath
             );
         })
-        .catch((error) => {
-            new Notice(`Eleven Labs: ${error.detail.message}`, 0);
+        .catch((error: Error | AxiosError) => {
+            if (axios.isAxiosError(error)) {
+                const stringResponse = String.fromCharCode.apply(
+                    null,
+                    new Uint8Array(error.response?.data)
+                );
+                const jsonResponse = JSON.parse(stringResponse);
+                new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
+            } else {
+                new Notice("Eleven Labs: Unknown error occurred", 0);
+            }
             console.log(error);
         });
 }

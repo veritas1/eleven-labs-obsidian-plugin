@@ -4,6 +4,7 @@ import {
     Plugin,
     Menu,
     MarkdownFileInfo,
+    Notice,
 } from "obsidian";
 import {
     ElevenLabsPluginSettings,
@@ -12,6 +13,7 @@ import {
 } from "./src/settings";
 import ElevenLabsApi from "./src/eleven_labs_api";
 import { ElevenLabsModal } from "./src/modals";
+import axios from "axios";
 
 export default class ElevenLabsPlugin extends Plugin {
     settings: ElevenLabsPluginSettings;
@@ -56,10 +58,19 @@ export default class ElevenLabsPlugin extends Plugin {
 
     async loadVoices() {
         try {
-            const response = await ElevenLabsApi.getVoices(this.settings.apiKey);
+            const response = await ElevenLabsApi.getVoices(
+                this.settings.apiKey
+            );
             this.voices = response;
         } catch (error) {
-            console.log(error);
+            if (axios.isAxiosError(error)) {
+                const stringResponse = String.fromCharCode.apply(
+                    null,
+                    new Uint8Array(error.response?.data)
+                );
+                const jsonResponse = JSON.parse(stringResponse);
+                new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
+            }
         }
     }
 

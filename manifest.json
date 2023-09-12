@@ -1,7 +1,7 @@
 {
 	"id": "eleven-labs-plugin",
 	"name": "Eleven Labs",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Turn your Obsidian notes into text-to-speech audio files with Eleven Labs",
 	"author": "Mark Charles",
