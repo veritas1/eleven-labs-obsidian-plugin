@@ -4,31 +4,17 @@ import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
 import axios, { AxiosError } from "axios";
 
-// function createNoteProperties(voiceName: string, voiceId: string, date: Date) {
-//     return `
-// ---
-// voice: ${voiceName}
-// voice_id: ${voiceId}
-// model: eleven_monolingual_v1
-// created: 2023-09-06T12:00:00
-// tags: [eleven-labs]
-// ---
-// `;
-// }
-
 function createAudioNote(
     vault: Vault,
     text: string,
     filename: string,
     voiceName: string,
-    voiceId: string,
     enabled: boolean,
     stability: number,
     similarityBoost: number,
     date: Date,
     notePath: string | undefined
 ) {
-    // const properties = createNoteProperties(voiceName, voiceId, date);
     const content = `
 **Voice:** ${voiceName}
 **Model:** eleven_monolingual_v1
@@ -88,7 +74,6 @@ export function generateAudio(
                 text,
                 filename,
                 voiceName,
-                voiceId,
                 enabled,
                 stability,
                 similarityBoost,
