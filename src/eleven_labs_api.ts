@@ -20,9 +20,6 @@ class ElevenLabsApi {
                 headers: {
                     "xi-api-key": apiKey,
                 },
-            })
-            .then((response) => {
-                return response.data.voices;
             });
     }
     static async textToSpeech(
@@ -50,9 +47,6 @@ class ElevenLabsApi {
                     "Content-Type": "application/json",
                 },
                 responseType: "arraybuffer",
-            })
-            .then((response) => {
-                return response.data;
             });
     }
 }

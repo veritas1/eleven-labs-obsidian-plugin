@@ -2,7 +2,7 @@ import { Notice, MarkdownView, Vault } from "obsidian";
 import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 function createAudioNote(
     vault: Vault,
@@ -37,7 +37,7 @@ function createAudioFile(vault: Vault, filename: string, data: any) {
     vault.createBinary(`ElevenLabs/Audio/${filename}.mp3`, data);
 }
 
-export function generateAudio(
+export async function generateAudio(
     plugin: ElevenLabsPlugin,
     text: string,
     voiceName: string,
@@ -57,41 +57,41 @@ export function generateAudio(
     const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
     const notePath = activeView?.file?.basename;
 
-    ElevenLabsApi.textToSpeech(
-        plugin.settings.apiKey,
-        text,
-        voiceId,
-        voiceSettings
-    )
-        .then((response: any) => {
-            const date = new Date();
-            const filename = generateFilename(voiceName, date);
-            new Notice(`Eleven Labs: Created audio file (${filename})`, 5000);
+    try {
+        const response = await ElevenLabsApi.textToSpeech(
+            plugin.settings.apiKey,
+            text,
+            voiceId,
+            voiceSettings
+        );
 
-            createAudioFile(plugin.app.vault, filename, response);
-            createAudioNote(
-                plugin.app.vault,
-                text,
-                filename,
-                voiceName,
-                enabled,
-                stability,
-                similarityBoost,
-                date,
-                notePath
+        const date = new Date();
+        const filename = generateFilename(voiceName, date);
+
+        createAudioFile(plugin.app.vault, filename, response.data);
+        createAudioNote(
+            plugin.app.vault,
+            text,
+            filename,
+            voiceName,
+            enabled,
+            stability,
+            similarityBoost,
+            date,
+            notePath
+        );
+        new Notice(`Eleven Labs: Created audio file (${filename})`, 5000);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const stringResponse = String.fromCharCode.apply(
+                null,
+                new Uint8Array(error.response?.data)
             );
-        })
-        .catch((error: Error | AxiosError) => {
-            if (axios.isAxiosError(error)) {
-                const stringResponse = String.fromCharCode.apply(
-                    null,
-                    new Uint8Array(error.response?.data)
-                );
-                const jsonResponse = JSON.parse(stringResponse);
-                new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
-            } else {
-                new Notice("Eleven Labs: Unknown error occurred", 0);
-            }
-            console.log(error);
-        });
+            const jsonResponse = JSON.parse(stringResponse);
+            new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
+        } else {
+            new Notice("Eleven Labs: Unknown error occurred", 0);
+        }
+        console.log(error);
+    }
 }
