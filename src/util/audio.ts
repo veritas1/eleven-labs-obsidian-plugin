@@ -65,10 +65,12 @@ export async function generateAudio(
             voiceSettings
         );
 
+        console.log(response);
+
         const date = new Date();
         const filename = generateFilename(voiceName, date);
 
-        createAudioFile(plugin.app.vault, filename, response.data);
+        createAudioFile(plugin.app.vault, filename, response.arrayBuffer);
         createAudioNote(
             plugin.app.vault,
             text,

@@ -63,7 +63,8 @@ export default class ElevenLabsPlugin extends Plugin {
             const response = await ElevenLabsApi.getVoices(
                 this.settings.apiKey
             );
-            this.voices = response.data.voices;
+            console.log(response);
+            this.voices = response.json.voices;
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const stringResponse = String.fromCharCode.apply(
