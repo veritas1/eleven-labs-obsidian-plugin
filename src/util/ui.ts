@@ -38,7 +38,7 @@ export function renderVoiceSettings(
         plugin.settings.voiceSettings[selectedVoiceId] = voiceSettings;
     }
 
-    parent.createEl("h6", { text: "Voice Settings" });
+    parent.createEl("h6", { text: "Voice settings" });
     const voiceSettingsToggle = new ToggleComponent(parent)
         .setValue(voiceSettings.enabled)
         .setTooltip("Enable voice settings")
