@@ -54,7 +54,9 @@ export default class ElevenLabsPlugin extends Plugin {
         this.addSettingTab(new ElevenLabsSettingTab(this.app, this));
     }
 
-    onunload() {}
+    onunload() {
+        this.app.workspace.off("editor-menu", this.addContextMenuItems);
+    }
 
     async loadVoices() {
         try {
