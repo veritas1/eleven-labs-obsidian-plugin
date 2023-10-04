@@ -23,7 +23,7 @@ export function renderVoiceSettings(
     parent: HTMLElement
 ) {
 
-    parent.innerHTML = "";
+    parent.empty();
 
     const selectedVoiceId = plugin.settings.selectedVoiceId || "";
 
