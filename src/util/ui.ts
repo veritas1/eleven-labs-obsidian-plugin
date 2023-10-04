@@ -92,7 +92,7 @@ export function renderVoiceSettings(
 }
 
 export function renderTextSection(parent: HTMLElement, selectedText: string) {
-    parent.createDiv("text-area", (el) => {
+    parent.createDiv("eleven-labs-text-area", (el) => {
         // Title
         el.createEl("h6", { text: "Text" });
 
