@@ -41,6 +41,25 @@ export default class ElevenLabsPlugin extends Plugin {
         });
     };
 
+    openModalCommand = {
+        id: "eleven-labs-open-modal",
+        name: "Open Modal",
+        editorCheckCallback: (
+            checking: boolean,
+            editor: Editor,
+            view: MarkdownView
+        ) => {
+            const selectedText = view?.editor.getSelection();
+            if (selectedText) {
+                if (!checking) {
+                    new ElevenLabsModal(this, selectedText).open();
+                }
+                return true;
+            }
+            return false;
+        },
+    };
+
     async onload() {
         await this.loadSettings();
 
@@ -49,6 +68,9 @@ export default class ElevenLabsPlugin extends Plugin {
 
         // Add context menu item
         this.app.workspace.on("editor-menu", this.addContextMenuItems);
+
+        // Add command to open modal
+        this.addCommand(this.openModalCommand);
 
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new ElevenLabsSettingTab(this.app, this));
