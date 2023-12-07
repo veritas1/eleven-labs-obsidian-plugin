@@ -7,7 +7,8 @@ export interface VoiceSettings {
     similarity_boost: number;
 }
 
-interface TextToSpeechRequest { 
+interface TextToSpeechRequest {
+    model_id: string;
     text: string;
     voice_settings?: VoiceSettings;
 }
@@ -22,13 +23,26 @@ class ElevenLabsApi {
             },
         });
     }
+
+    static async getModels(apiKey: string) {
+        return requestUrl({
+            url: `${BASE_URL}/models`,
+            method: "GET",
+            headers: {
+                "xi-api-key": apiKey,
+            },
+        });
+    }
+
     static async textToSpeech(
         apiKey: string,
         text: string,
         voiceId: string,
+        modelId: string,
         options?: VoiceSettings
     ) {
         const data: TextToSpeechRequest = {
+            model_id: modelId,
             text: text,
         };
         if (options) {

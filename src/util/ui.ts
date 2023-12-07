@@ -1,11 +1,12 @@
 import ElevenLabsPlugin from "main";
 import {
     ButtonComponent,
+    DropdownComponent,
     SliderComponent,
     TextAreaComponent,
     ToggleComponent,
 } from "obsidian";
-import { VoiceSettings } from "src/settings";
+import { VoiceSettings, DEFAULT_MODEL_ID } from "src/settings";
 
 export function renderGenerateAudioButton(
     parent: HTMLElement,
@@ -18,11 +19,29 @@ export function renderGenerateAudioButton(
         .onClick(callback);
 }
 
+export function renderModelLanguageChips(
+    plugin: ElevenLabsPlugin,
+    parent: HTMLElement,
+) {
+    parent.empty();
+    const models: any[] = plugin.models;
+    const selectedModelId: string = plugin.settings.selectedModelId || DEFAULT_MODEL_ID;
+    const selectedModel = models.find(
+        (model) => model.model_id === selectedModelId
+    );
+    const languages: string[] = selectedModel.languages.map((language: any): string => { return language.name });
+    languages.forEach((language: string) => {
+        parent.createEl("span", {
+            text: language,
+            cls: "language-chip",
+        });
+    });
+}
+
 export function renderVoiceSettings(
     plugin: ElevenLabsPlugin,
     parent: HTMLElement
 ) {
-
     parent.empty();
 
     const selectedVoiceId = plugin.settings.selectedVoiceId || "";
@@ -197,4 +216,31 @@ export function renderVoiceSelect(
             onVoiceSelected();
         });
     });
+}
+
+export function renderModelSelect(
+    plugin: ElevenLabsPlugin,
+    parent: HTMLElement,
+    onModelSelected: () => void
+): HTMLSelectElement {
+    const models: any[] = plugin.models;
+    const selectedModelId: string = plugin.settings.selectedModelId || "";
+
+    const options: Record<string, string> = models.reduce((acc, obj) => {
+        acc[obj.model_id] = obj.name;
+        return acc;
+    }, {} as Record<string, string>);
+
+    const dropdown = new DropdownComponent(parent)
+        .addOptions(options)
+        .setValue(selectedModelId || DEFAULT_MODEL_ID)
+        .onChange((value) => {
+            plugin.settings.selectedModelId = value;
+            plugin.saveSettings();
+            onModelSelected();
+        });
+
+    dropdown.selectEl.classList.add("eleven-labs-model-select");
+
+    return dropdown.selectEl;
 }

@@ -2,13 +2,13 @@ import { Notice, MarkdownView, Vault } from "obsidian";
 import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
-import axios from "axios";
 
 function createAudioNote(
     vault: Vault,
     text: string,
     filename: string,
     voiceName: string,
+    modelName: string,
     enabled: boolean,
     stability: number,
     similarityBoost: number,
@@ -17,14 +17,14 @@ function createAudioNote(
 ) {
     const content = `
 **Voice:** ${voiceName}
-**Model:** eleven_monolingual_v1
+**Model:** ${modelName}
 **Created:** ${date.toLocaleString()}
 **Voice Settings Enabled:** ${enabled}
 **Stability:** ${stability}
 **Similarity Boost:** ${similarityBoost}
 **Note:** [[${notePath}]]
 
-> ${text}
+${text.split("\n").map(line => `> ${line}`).join("\n")}
 
 ![[ElevenLabs/Audio/${filename}.mp3]]
 
@@ -42,6 +42,8 @@ export async function generateAudio(
     text: string,
     voiceName: string,
     voiceId: string,
+    modelName: string,
+    modelId: string,
     enabled: boolean,
     stability: number,
     similarityBoost: number
@@ -62,6 +64,7 @@ export async function generateAudio(
             plugin.settings.apiKey,
             text,
             voiceId,
+            modelId,
             voiceSettings
         );
 
@@ -76,6 +79,7 @@ export async function generateAudio(
             text,
             filename,
             voiceName,
+            modelName,
             enabled,
             stability,
             similarityBoost,
@@ -84,16 +88,6 @@ export async function generateAudio(
         );
         new Notice(`Eleven Labs: Created audio file (${filename})`, 5000);
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            const stringResponse = String.fromCharCode.apply(
-                null,
-                new Uint8Array(error.response?.data)
-            );
-            const jsonResponse = JSON.parse(stringResponse);
-            new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
-        } else {
-            new Notice("Eleven Labs: Unknown error occurred", 0);
-        }
         console.log(error);
     }
 }

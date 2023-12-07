@@ -16,13 +16,21 @@ In your notes, when in **edit mode**, simply highlight the text you want to use,
 
 ![Highlight text](/images/image2.png)
 
-You'll then be presented with a modal, where you can select a voice to use from your Eleven Labs account.
+If you prefer, you can trigger the modal using the Command Palette (`CTRL` + `p`).
+
+![Commmand Palette](/images/command-palette.png)
+
+You'll then be presented with a modal, where you can select a voice to use from your Eleven Labs account:
 
 ![Modal](/images/image3.png)
 
-Addtionally, you can override the voice settings.
+Override the voice settings:
 
 ![Voice settings](/images/image4.png)
+
+Select which model to use, allowing multilingual output:
+
+![Model Select](/images/model-select.png)
 
 Now you can generate your audio, by pressing the "Generate audio" button. This will happen in the background and can take a few minutes depending on the number of characters being processed. You will get a notification once the audio has been generated and downloaded to your vault.
 

@@ -6,7 +6,9 @@ import {
     renderGenerateAudioButton,
     renderTextSection,
     renderVoiceSelect,
+    renderModelSelect,
     renderVoiceSettings,
+    renderModelLanguageChips,
 } from "./util/ui";
 
 export class ElevenLabsModal extends Modal {
@@ -25,15 +27,27 @@ export class ElevenLabsModal extends Modal {
         contentEl.addClass("eleven-labs-modal");
 
         let voiceSettings: any;
-        let selectEl: HTMLSelectElement;
+        let voiceSelectEl: HTMLSelectElement;
+        let modelSelectEl: HTMLSelectElement;
 
         // Settings
         contentEl.createDiv("settings", (el) => {
-
             // Select voice
-            selectEl = renderVoiceSelect(this.plugin, el, () => {
-                voiceSettings = renderVoiceSettings(this.plugin, voiceSettingsContainer);
+            voiceSelectEl = renderVoiceSelect(this.plugin, el, () => {
+                voiceSettings = renderVoiceSettings(
+                    this.plugin,
+                    voiceSettingsContainer
+                );
             });
+
+            // Select model
+            modelSelectEl = renderModelSelect(this.plugin, el, () => {
+                renderModelLanguageChips(this.plugin, languageChipsContainer);
+            });
+
+            // Language chips
+            const languageChipsContainer = el.createDiv("chips-container");
+            renderModelLanguageChips(this.plugin, languageChipsContainer);
 
             // Divider
             el.createEl("hr");
@@ -41,7 +55,10 @@ export class ElevenLabsModal extends Modal {
             const voiceSettingsContainer = el.createDiv("voice-settings");
 
             // Voice settings
-            voiceSettings = renderVoiceSettings(this.plugin, voiceSettingsContainer);
+            voiceSettings = renderVoiceSettings(
+                this.plugin,
+                voiceSettingsContainer
+            );
 
             // Divider
             el.createEl("hr");
@@ -61,8 +78,10 @@ export class ElevenLabsModal extends Modal {
                 generateAudio(
                     this.plugin,
                     this.selectedText,
-                    selectEl.options[selectEl.selectedIndex].text,
-                    selectEl.value,
+                    voiceSelectEl.options[voiceSelectEl.selectedIndex].text,
+                    voiceSelectEl.value,
+                    modelSelectEl.options[modelSelectEl.selectedIndex].text,
+                    modelSelectEl.value,
                     voiceSettings.voiceSettingsToggle.getValue(),
                     voiceSettings.stabilitySlider.getValue(),
                     voiceSettings.similaritySlider.getValue()

@@ -21,6 +21,10 @@ If your plugin does not need CSS, delete this file.
     height: 150px;
 }
 
+.eleven-labs-model-select {
+    margin-top: 1rem;
+}
+
 .btn-generate-audio {
     margin-top: 1rem;
     width: 100%;
@@ -35,7 +39,7 @@ If your plugin does not need CSS, delete this file.
     margin-bottom: 1rem;
 }
 .slider[disabled] {
-    opacity: 0.20;
+    opacity: 0.2;
 }
 
 .enable {
@@ -69,4 +73,19 @@ If your plugin does not need CSS, delete this file.
 
 .voice-settings-description {
     margin-bottom: 1rem;
+}
+
+.chips-container {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Adjust the gap between chips */
+}
+
+.language-chip {
+    padding: 5px 10px;
+    border: 1px white solid;
+    font-size: 0.7rem;
+    border-radius: 16px; /* This gives the chips their rounded shape */
+    outline: none; /* Removes the outline to make it look better */
 }

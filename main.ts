@@ -4,7 +4,6 @@ import {
     Plugin,
     Menu,
     MarkdownFileInfo,
-    Notice,
 } from "obsidian";
 import {
     ElevenLabsPluginSettings,
@@ -13,11 +12,11 @@ import {
 } from "./src/settings";
 import ElevenLabsApi from "./src/eleven_labs_api";
 import { ElevenLabsModal } from "./src/modals";
-import axios from "axios";
 
 export default class ElevenLabsPlugin extends Plugin {
     settings: ElevenLabsPluginSettings;
     voices: any[];
+    models: any[];
 
     addContextMenuItems = (
         menu: Menu,
@@ -66,6 +65,9 @@ export default class ElevenLabsPlugin extends Plugin {
         // Load voices
         this.loadVoices();
 
+        // Load models
+        this.loadModels();
+
         // Add context menu item
         this.app.workspace.on("editor-menu", this.addContextMenuItems);
 
@@ -85,17 +87,22 @@ export default class ElevenLabsPlugin extends Plugin {
             const response = await ElevenLabsApi.getVoices(
                 this.settings.apiKey
             );
-            console.log(response);
             this.voices = response.json.voices;
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const stringResponse = String.fromCharCode.apply(
-                    null,
-                    new Uint8Array(error.response?.data)
-                );
-                const jsonResponse = JSON.parse(stringResponse);
-                new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
-            }
+            console.log(error);
+        }
+    }
+
+    async loadModels() {
+        try {
+            const response = await ElevenLabsApi.getModels(
+                this.settings.apiKey
+            );
+            this.models = response.json.filter(
+                (m: any) => m.can_do_text_to_speech
+            );
+        } catch (error) {
+            console.log(error);
         }
     }
 

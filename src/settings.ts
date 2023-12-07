@@ -1,6 +1,8 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import ElevenLabsPlugin from "../main";
 
+export const DEFAULT_MODEL_ID = "eleven_monolingual_v1";
+
 export interface VoiceSettings {
     enabled: boolean;
     stability: number;
@@ -10,12 +12,14 @@ export interface VoiceSettings {
 export interface ElevenLabsPluginSettings {
     apiKey: string;
     selectedVoiceId: string | null;
-    voiceSettings: { [key: string]: VoiceSettings }
+    selectedModelId: string | null;
+    voiceSettings: { [key: string]: VoiceSettings };
 }
 
 export const DEFAULT_SETTINGS: ElevenLabsPluginSettings = {
     apiKey: "",
     selectedVoiceId: null,
+    selectedModelId: null,
     voiceSettings: {},
 };
 
