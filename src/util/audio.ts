@@ -9,6 +9,7 @@ function createAudioNote(
     text: string,
     filename: string,
     voiceName: string,
+    modelName: string,
     enabled: boolean,
     stability: number,
     similarityBoost: number,
@@ -17,14 +18,14 @@ function createAudioNote(
 ) {
     const content = `
 **Voice:** ${voiceName}
-**Model:** eleven_monolingual_v1
+**Model:** ${modelName}
 **Created:** ${date.toLocaleString()}
 **Voice Settings Enabled:** ${enabled}
 **Stability:** ${stability}
 **Similarity Boost:** ${similarityBoost}
 **Note:** [[${notePath}]]
 
-> ${text}
+${text.split("\n").map(line => `> ${line}`).join("\n")}
 
 ![[ElevenLabs/Audio/${filename}.mp3]]
 
@@ -42,6 +43,8 @@ export async function generateAudio(
     text: string,
     voiceName: string,
     voiceId: string,
+    modelName: string,
+    modelId: string,
     enabled: boolean,
     stability: number,
     similarityBoost: number
@@ -62,6 +65,7 @@ export async function generateAudio(
             plugin.settings.apiKey,
             text,
             voiceId,
+            modelId,
             voiceSettings
         );
 
@@ -76,6 +80,7 @@ export async function generateAudio(
             text,
             filename,
             voiceName,
+            modelName,
             enabled,
             stability,
             similarityBoost,
