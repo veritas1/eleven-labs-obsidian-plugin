@@ -2,7 +2,6 @@ import { Notice, MarkdownView, Vault } from "obsidian";
 import { generateFilename } from "./file";
 import ElevenLabsApi, { VoiceSettings } from "src/eleven_labs_api";
 import ElevenLabsPlugin from "main";
-import axios from "axios";
 
 function createAudioNote(
     vault: Vault,
@@ -89,16 +88,6 @@ export async function generateAudio(
         );
         new Notice(`Eleven Labs: Created audio file (${filename})`, 5000);
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            const stringResponse = String.fromCharCode.apply(
-                null,
-                new Uint8Array(error.response?.data)
-            );
-            const jsonResponse = JSON.parse(stringResponse);
-            new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
-        } else {
-            new Notice("Eleven Labs: Unknown error occurred", 0);
-        }
         console.log(error);
     }
 }

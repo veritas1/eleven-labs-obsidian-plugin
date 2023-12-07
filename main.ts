@@ -13,7 +13,6 @@ import {
 } from "./src/settings";
 import ElevenLabsApi from "./src/eleven_labs_api";
 import { ElevenLabsModal } from "./src/modals";
-import axios from "axios";
 
 export default class ElevenLabsPlugin extends Plugin {
     settings: ElevenLabsPluginSettings;
@@ -91,14 +90,7 @@ export default class ElevenLabsPlugin extends Plugin {
             );
             this.voices = response.json.voices;
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const stringResponse = String.fromCharCode.apply(
-                    null,
-                    new Uint8Array(error.response?.data)
-                );
-                const jsonResponse = JSON.parse(stringResponse);
-                new Notice(`Eleven Labs: ${jsonResponse.detail.message}`, 0);
-            }
+            console.log(error);
         }
     }
 
